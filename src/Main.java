@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -26,6 +27,60 @@ public class Main {
 
         placesToVisit.addFirst(new Place("Sydney",0));
         System.out.println(placesToVisit);
+
+        var iterator = placesToVisit.listIterator();
+        Scanner scanner = new Scanner(System.in);
+        boolean quitLoop = false;
+        boolean forward = true;
+
+        printMenu();
+
+        while (!quitLoop) {
+//            printMenu();
+
+            if(!iterator.hasPrevious()) {
+                System.out.println("Originating: " + iterator.next());
+                forward = true;
+            }
+            if (!iterator.hasNext()) {
+                System.out.println("Final: " + iterator.previous());
+                forward = false;
+            }
+
+            System.out.println("Enter Value: ");
+            String menuItem = scanner.nextLine().toUpperCase().substring(0,1);
+
+            switch (menuItem) {
+                case "F" -> {
+                    System.out.println("User wants to go forward");
+                    if (!forward) { //kod 56 - 60 linijka - służy do odwracania kierunków z tyłu na przód
+                        forward = true;
+                        if (iterator.hasNext()) {
+                            iterator.next();
+                        }
+                    }
+                    if (iterator.hasNext()) {
+                        System.out.println(iterator.next());
+                    }
+                }
+                case "B" -> {
+                    System.out.println("User wants to go backwards");
+                    if (forward) {
+                        forward = false;
+                        if (iterator.hasPrevious()) {
+                            iterator.previous();
+                        }
+                    }
+
+                    if (iterator.hasPrevious()) {
+                        System.out.println(iterator.previous());
+                    }
+                }
+                case "M" -> printMenu();
+                case "L" -> System.out.println(placesToVisit);
+                default -> quitLoop = true;
+            }
+        }
     }
 
     private static void addPlace(LinkedList<Place> list, Place place) {
@@ -50,5 +105,16 @@ public class Main {
             matchedIndex++;
         }
         list.add(place);
+    }
+
+    private static void printMenu() {
+        System.out.println("""
+                Available actions (select word or letter):
+                (F)orward
+                (B)ackwards
+                (L)ist Places
+                (M)enu
+                (Q)uit""");
+
     }
 }
